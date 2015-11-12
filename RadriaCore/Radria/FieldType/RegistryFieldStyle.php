@@ -1,7 +1,7 @@
 <?php
-namespace RadriaCore\Radria;
+namespace RadriaCore\Radria\FieldType;
 
-use RadriaCore\Radria\FieldType;
+use RadriaCore\Radria\FieldType\FieldType;
 
 /**
  * Class RegistryFieldStyle
@@ -14,7 +14,8 @@ use RadriaCore\Radria\FieldType;
  * @package PASClass
  */
 
-Class RegistryFieldStyle extends FieldType {
+class RegistryFieldStyle extends FieldType
+{
     var $style_param = "";
     var $param_set = false;
 
