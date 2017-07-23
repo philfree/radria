@@ -1,3 +1,6 @@
+
+This version from branch radria2.1 is to fix the eregi incompatibility 
+
 Radria was originally a complex framework with a lot of tools to generate code and web applications.
 http://radria.sqlfusion.com/
 
