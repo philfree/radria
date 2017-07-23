@@ -110,7 +110,7 @@ if ($submitbutton != $strCancel) {
                         $this->setLog(" add:`$key` = $val, ");
                     }
             }
-            $valuelist = ereg_replace(', $', '', $valuelist);
+            $valuelist = preg_replace(', $', '', $valuelist);
             
             if (!empty($primary_key_var)) {
                 if ($reg->fields[$primary_key_var]->getRdata("databasetype") == "integer") {
@@ -155,7 +155,7 @@ if ($submitbutton != $strCancel) {
                     $this->setLog(" add:\"$key\" = $val, ");
                 }
             }
-            $valuelist = ereg_replace(', $', '', $valuelist);
+            $valuelist = preg_replace(', $', '', $valuelist);
             
             if (!empty($primary_key_var)) {
                 if ($reg->fields[$primary_key_var]->getRdata("databasetype") == "integer") {
@@ -176,7 +176,7 @@ if ($submitbutton != $strCancel) {
                 $valuelist .= "`$key` = $val, ";
                 $this->setLog(" add:`$key` = $val, ");
             }
-            $valuelist = ereg_replace(', $', '', $valuelist);
+            $valuelist = preg_replace(', $', '', $valuelist);
             $query = "UPDATE `$table` SET $valuelist WHERE $primarykey";
         }
         $this->setLog("\n Running query:\n".$query);

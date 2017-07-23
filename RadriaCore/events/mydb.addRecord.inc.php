@@ -90,8 +90,8 @@ if ($submitbutton != $strCancel)  {
                 }
             }
             $table = str_replace("`", "", $table);
-            $fieldlist = ereg_replace(', $', '', $fieldlist);
-            $valuelist = ereg_replace(', $', '', $valuelist);
+            $fieldlist = preg_replace(', $', '', $fieldlist);
+            $valuelist = preg_replace(', $', '', $valuelist);
             $query = "INSERT INTO `$table` ($fieldlist) VALUES ($valuelist)";
 
         } elseif ($GLOBALS['cfg_local_db'] == "pgsql") {
@@ -141,8 +141,8 @@ if ($submitbutton != $strCancel)  {
                         }
                     }
             }
-            $fieldlist = ereg_replace(', $', '', $fieldlist);
-            $valuelist = ereg_replace(', $', '', $valuelist);
+            $fieldlist = preg_replace(', $', '', $fieldlist);
+            $valuelist = preg_replace(', $', '', $valuelist);
             $query = "INSERT INTO `$table` ($fieldlist) VALUES ($valuelist)";
 
         } else {
@@ -160,8 +160,8 @@ if ($submitbutton != $strCancel)  {
                             $valuelist .= "$val, ";
                     }
             }
-            $fieldlist = ereg_replace(', $', '', $fieldlist);
-            $valuelist = ereg_replace(', $', '', $valuelist);
+            $fieldlist = preg_replace(', $', '', $fieldlist);
+            $valuelist = preg_replace(', $', '', $valuelist);
             $query = "INSERT INTO `$table` ($fieldlist) VALUES ($valuelist)";
 
         }

@@ -219,7 +219,7 @@ Class sqlConnect {
   }
 
   function setBaseDirectory($dirname) {
-    if(ereg("/$", $dirname)) {
+    if(preg_match("/$", $dirname)) {
      $this->baseDir = $dirname ;
     } else {
      $this->baseDir = $dirname."/" ;
@@ -231,7 +231,7 @@ Class sqlConnect {
   }
 
   function setProjectDirectory($dirname) {
-    if(ereg("/$", $dirname)) {
+    if(preg_match("/$", $dirname)) {
       $this->projectDir = $dirname ;
     } else {
       $this->projectDir = $dirname."/" ;

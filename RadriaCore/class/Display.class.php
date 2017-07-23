@@ -56,7 +56,7 @@ class Display extends BaseObject {
    * @see getLink()
    */
   function getUrl() {
-    if (ereg("\?", $this->page)) {
+    if (preg_match("/\?/", $this->page)) {
       list($this->page, $query) = explode("?", $this->page) ;
     }
     $url = "" ;

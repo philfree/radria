@@ -172,7 +172,7 @@ class EventControler extends BaseObject {
 						}
 					}
 				} else {
-					    list($object_name, $instance_param) = split(":", $object_name);
+					    list($object_name, $instance_param) = explode(":", $object_name);
 					    $this->setLog("\n Object with instantiation param: $object_name ($instance_param) ");
 					    if (isset($event_action_object) && is_object($_SESSION[$event_action_object]->fields->{$instance_param})) {
 							$this->setLog("\n $event_action_object Databoject with FieldType:".$object_name. "field ".$instance_param." event:".$method);
@@ -389,9 +389,9 @@ class EventControler extends BaseObject {
         }
     }
     if ($this->getUniqueUrl()) {
-        if (ereg("uniqid", $this->getUrlNext())) {
-            $this->urlNext = ereg_replace("uniqid=.*", "uniqid=".uniqid(rand()), $this->getUrlNext()) ;
-        } elseif (ereg("\?", $this->getUrlNext())) {
+        if (preg_match("uniqid", $this->getUrlNext())) {
+            $this->urlNext = preg_replace("uniqid=.*", "uniqid=".uniqid(rand()), $this->getUrlNext()) ;
+        } elseif (preg_match("\?", $this->getUrlNext())) {
             $this->urlNext .= "&uniqid=".uniqid(rand()) ;
         }  else {
             $this->urlNext .= "?uniqid=".uniqid(rand()) ;

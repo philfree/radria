@@ -34,7 +34,7 @@
                 $tmp_emailname = $emailfield[$i] ;
                 if (strlen($fields[$tmp_emailname]) > 0) {
                     list ( $user, $domain )  = explode ( "@", $fields[$tmp_emailname] );
-                    if (!eregi("Win32", $HTTP_SERVER_VARS["SERVER_SOFTWARE"])) {
+                    if (!preg_match("/Win32/i", $HTTP_SERVER_VARS["SERVER_SOFTWARE"])) {
                         if (strlen($domain) > 0 && strlen($user)>0) {
                             if (!(checkdnsrr ( $domain, "ANY" ))) {
                                     if (strlen($errorpage)>0) {

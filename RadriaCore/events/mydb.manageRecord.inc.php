@@ -64,7 +64,7 @@ if ($submitbutton != "Cancel") {
 
   if ($eventaction == "Add") {
     if(strlen($goto)>0 && strlen($table)>0 && strlen($formpage) > 0) {
-      if (ereg("\?", $goto)) { $sep = "&"; } else { $sep="?";}
+      if (preg_match("\?", $goto)) { $sep = "&"; } else { $sep="?";}
       $urlnext = $goto ;
       $goto = urlencode($urlnext) ;
       $disp->addParam("table", $table) ;

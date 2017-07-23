@@ -19,7 +19,7 @@
 //echo "\n ".$key."->".$value;
       if (strlen($value) > 0 && $value != "0") {
    //     if (strlen($value) > 0) {
-        if((eregi($value, $_SERVER['PHP_SELF'])) && (is_object($_SESSION[$key]))) {
+        if((preg_match("/".$value."/i", $_SERVER['PHP_SELF'])) && (is_object($_SESSION[$key]))) {
             if (is_subclass_of($_SESSION[$key], "Display") || (get_class($_SESSION[$key]) == "Display")) {
                 $params = $_SESSION[$key]->getParams() ;
                 if (is_array($params)) {

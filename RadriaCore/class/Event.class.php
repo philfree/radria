@@ -190,7 +190,7 @@ class Event extends Display {
         // $this->getSecureKey() ; avoid double generation of the key.
         if (is_array($this->params)) {
             foreach($this->params as $varname=>$varvalue) {
-                if (eregi("mydb_events", $varname) || $this->do_not_hide[$varname]){
+                if (preg_match("/mydb_events/i", $varname) || $this->do_not_hide[$varname]){
                     $url .= $this->getAmp().$varname."=".urlencode($varvalue) ;
                 } else {
                     $newparams[$varname] = $varvalue;
@@ -291,7 +291,7 @@ class Event extends Display {
         //$key = $this->getSecureKey() ;
         if (is_array($this->params)) {
             foreach($this->params as $varname=>$varvalue) {
-                if (eregi("mydb_events", $varname) || $this->do_not_hide[$varname]){
+                if (preg_match("/mydb_events/i", $varname) || $this->do_not_hide[$varname]){
                     if (is_array($varvalue)) {
                         foreach($varvalue as $key => $value) {
                             $out .="\n  <input id=\"".$this->getDomId()."_".$this->getJavascriptSafeName($varname)."_".$this->getJavascriptSafeName($key)."_\" type=\"hidden\" name=\"".$varname."[".$key."]\" value=\"".$value."\">" ;
@@ -493,7 +493,7 @@ class Event extends Display {
       if (is_object($$key) && ($$key->isFree())) {
         $tmp_params = $$key->getParams() ;
         while(list($name, $value) = each($tmp_params)) {
-          if (!eregi("mydb_events", $name)) {
+          if (!preg_match("/mydb_events/i", $name)) {
             $this->params[$name] = $value ;
           }
         }

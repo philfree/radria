@@ -268,7 +268,7 @@ Class DataObject extends sqlQuery {
             $method_found = false;
             
             // lets use the method as an ordering.
-            if (ereg("^getChild(.*)$", $method, $match)) {
+            if (preg_match("/^getChild(.*)$/", $method, $match)) {
                 $this->setLog("\n DataObject __call for child:".$match[1]); 
                 $tablename = strtolower($match[1]);
                 $order_limit = $params[0];
@@ -310,7 +310,7 @@ Class DataObject extends sqlQuery {
                     }
                     
             }
-            if (ereg("^getParent(.*)$", $method, $match)) {
+            if (preg_match("/^getParent(.*)$/", $method, $match)) {
                 $this->setLog("\n DataObject __call for parent:".$match[1]); 
                 $tablename = strtolower($match[1]);
 
@@ -756,10 +756,13 @@ Class DataObject extends sqlQuery {
     function eventAdd(EventControler $event_controler) {
 		$this->setFieldsFormating(false);
 		$this->eventValuesFromForm($event_controler);
+
         if ($event_controler->doSave == "yes") {           
+
             $this->add();
             $event_controler->insertid = $this->getInsertId($this->getTable(), $this->getPrimaryKey());
         }
+
     }
 
     /**
@@ -804,10 +807,11 @@ Class DataObject extends sqlQuery {
                 }
             }
             $table = str_replace("`", "", $table);
-            $fieldlist = ereg_replace(', $', '', $fieldlist);
-            $valuelist = ereg_replace(', $', '', $valuelist);
+            //$fieldlist = preg_replace(', $', '', $fieldlist);
+            //$valuelist = preg_replace(', $', '', $valuelist);
+	    $fieldlist = rtrim($fieldlist,' ,');
+	    $valuelist = rtrim($valuelist,' ,');
             $query = "INSERT INTO `$table` ($fieldlist) VALUES ($valuelist)";
-
         } elseif ($GLOBALS['cfg_local_db'] == "pgsql") {
 
             while (list($key, $fieldname) = each($tableFields)) {
@@ -855,8 +859,11 @@ Class DataObject extends sqlQuery {
                         }
                     }
             }
-            $fieldlist = ereg_replace(', $', '', $fieldlist);
-            $valuelist = ereg_replace(', $', '', $valuelist);
+            //$fieldlist = preg_replace(', $', '', $fieldlist);
+            //$valuelist = preg_replace(', $', '', $valuelist);
+	    $fieldlist = rtrim($fieldlist,',');
+            $valuelist = rtrim($valuelist,',');
+
             $query = "INSERT INTO `$table` ($fieldlist) VALUES ($valuelist)";
 
         } else {
@@ -874,8 +881,11 @@ Class DataObject extends sqlQuery {
                             $valuelist .= "$val, ";
                     }
             }
-            $fieldlist = ereg_replace(', $', '', $fieldlist);
-            $valuelist = ereg_replace(', $', '', $valuelist);
+            //$fieldlist = preg_replace(', $', '', $fieldlist);
+            //$valuelist = preg_replace(', $', '', $valuelist);
+            $fieldlist = rtrim($fieldlist,',');
+            $valuelist = rtrim($valuelist,',');
+
             $query = "INSERT INTO `$table` ($fieldlist) VALUES ($valuelist)";
 
         }
@@ -982,7 +992,8 @@ Class DataObject extends sqlQuery {
                     }
                     } 
             }
-            $valuelist = ereg_replace(', $', '', $valuelist);
+           // $valuelist = preg_replace(', $', '', $valuelist);
+	   $valuelist = rtrim($valuelist,' ,');
             
             if (!empty($primary_key_var)) {
 				if (is_object($reg->fields[$primary_key_var])) {
@@ -1027,7 +1038,7 @@ Class DataObject extends sqlQuery {
                     $this->setLog(" add:\"$key\" = $val, ");
                 }
             }
-            $valuelist = ereg_replace(', $', '', $valuelist);
+            $valuelist = preg_replace(', $', '', $valuelist);
 
             if (!empty($primary_key_var)) {
                 if ($reg->fields[$primary_key_var]->getRdata("databasetype") == "integer") {

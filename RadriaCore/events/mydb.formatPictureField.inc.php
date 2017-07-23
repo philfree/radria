@@ -24,7 +24,7 @@
   $strUnabletoSave .= $userfile_name[$fidx] ; 
 
     function setnewfilename($path, $filename, $id=0) {
-        if (!ereg("/$", $path)) { $path .= "/";}
+        if (!preg_match("/$", $path)) { $path .= "/";}
         if (file_exists($path.$filename)) {
             $id++;
             $filename = "n".$id."-".$filename;

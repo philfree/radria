@@ -49,7 +49,7 @@
   }
 
   $cfg_web_path =  dirname($_SERVER['PHP_SELF']);
-  if (!ereg("/$", $cfg_web_path)) {
+  if (!preg_match("/$", $cfg_web_path)) {
      $cfg_web_path .= "/";
   }
   session_set_cookie_params(0, $cfg_web_path);

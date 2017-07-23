@@ -180,7 +180,7 @@ Class sqlQuery extends BaseObject {
         while (list($key, $table) = each($this->table)) {
           $this->sql_query .= $table."," ;
         }
-        $this->sql_query = ereg_replace(",$", "", $this->sql_query) ;
+        $this->sql_query = preg_replace(",$", "", $this->sql_query) ;
       } else {
         $this->sql_query= "select * from $this->table" ;
       }
@@ -209,9 +209,9 @@ Class sqlQuery extends BaseObject {
     $this->result = $rquery ;
     $this->cursor = 0 ;
     if ($this->dbCon->getBackupSync()) {
-        if (eregi("^alter", $this->sql_query)
-         || eregi("^create", $this->sql_query)
-         || eregi("^drop", $this->sql_query)) {
+        if (preg_match("^/alter/i", $this->sql_query)
+         || preg_match("^/create/i", $this->sql_query)
+         || preg_match("^/drop/i", $this->sql_query)) {
             if ($this->dbCon->getUseDatabase()) {
                 $qInsSync = "insert into ".$this->dbCon->getTableBackupSync()." ( actiontime, sqlstatement, dbname) values ( '".time()."', '".addslashes($this->sql_query)."', '".$this->dbCon->db."') " ;
                 $rquery = odbc_exec($this->dbCon->id, $qInsSync);
@@ -223,9 +223,9 @@ Class sqlQuery extends BaseObject {
                 fclose($fp) ;
             }
           }
-        if (eregi("^insert", $this->sql_query)
-         || eregi("^update", $this->sql_query)
-         || eregi("^delete", $this->sql_query)) {
+        if (preg_match("^/insert/i", $this->sql_query)
+         || preg_match("^/update/i", $this->sql_query)
+         || preg_match("^/delete/i", $this->sql_query)) {
             if ($this->dbCon->getUseDatabase()) {
                 $qInsSync = "insert into ".$this->dbCon->getTableBackupSync()." ( actiontime, sqlstatement, dbname) values ( '".time()."', '".addslashes($this->sql_query)."', '".$this->dbCon->db."') " ;
                 $rquery = odbc_exec($this->dbCon->id, $qInsSync);

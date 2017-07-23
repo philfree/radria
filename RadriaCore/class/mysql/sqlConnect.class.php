@@ -366,7 +366,7 @@ Class sqlConnect extends BaseObject {
    *  Set the path where the MyDB library is stored.
    */
   function setBaseDirectory($dirname) {
-    if(ereg("/$", $dirname)) {
+    if(preg_match("/$/", $dirname)) {
      $this->baseDir = $dirname ;
     } else {
      $this->baseDir = $dirname."/" ;
@@ -383,7 +383,7 @@ Class sqlConnect extends BaseObject {
    *  Set the path of the project using this connexion is stored
    */
   function setProjectDirectory($dirname) {
-    if(ereg("/$", $dirname)) {
+    if(preg_match("/$/", $dirname)) {
       $this->projectDir = $dirname ;
     } else {
       $this->projectDir = $dirname."/" ;
