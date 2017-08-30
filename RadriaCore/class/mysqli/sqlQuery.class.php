@@ -134,15 +134,18 @@ Class sqlQuery extends BaseObject {
    * @access public
    */
   function getNumRows($result = 0) {
-  //  if (!((isset($this->num_rows) || ($this->num_rows > 0)))) {
-        if ($result) {
-          $this->num_rows = mysqli_num_rows($result) ;
-        } elseif($this->result) {
-          $this->num_rows = mysqli_num_rows($this->result) ;
+
+        if (!$result) {
+			 		$this->num_rows = 0 ;
+				} else {
+         	$this->num_rows = mysqli_num_rows($result) ;
+        } 
+				if(!$this->result && $this->num_rows == 0) {
+ 					$this->num_rows = 0 ;
         } else {
-          $this->num_rows = 0 ;
+         	$this->num_rows = mysqli_num_rows($this->result) ;
         }
-   // }
+
     return $this->num_rows ;
   }
 
@@ -216,7 +219,7 @@ Class sqlQuery extends BaseObject {
      } else {
         $this->query_connexion = $this->dbCon->id;
     }
-    if (preg_match("/^select/i", $this->sql_query)) { 
+    if (preg_match("/^select/i", $this->sql_query)) { 		
 		$rquery = mysqli_query($this->query_connexion, $this->sql_query." ".$this->sql_order." ".$qpos);
 		$this->setLog($this->sql_query." ".$this->sql_order." ".$qpos);
 	} else {
@@ -225,7 +228,7 @@ Class sqlQuery extends BaseObject {
 	}
 	
     $sqlerror = "";
-    if (!is_resource($rquery)) {
+    if (!$rquery) {
         $sqlerror = mysqli_error($this->query_connexion) ;
         if (!empty($sqlerror)) {
           $this->setError("<b>SQL Query Error :</b>".mysqli_errno($this->query_connexion)." - ".$sqlerror." (".$this->sql_query.")") ;

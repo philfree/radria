@@ -67,7 +67,7 @@ Class DataObject extends sqlQuery {
             $this->setLogRun(RADRIA_LOG_RUN_DATAOBJECT);
         }
         //$this->dbCon = $conx;
-        if (!is_resource($this->dbCon->id)) {
+        if (!$this->dbCon->id) {
             $this->setError("DataObject Error: No open or valid connexion has been provide to execute the query. ") ;
             return false;
         }
