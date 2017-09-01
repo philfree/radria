@@ -228,7 +228,7 @@ Class sqlQuery extends BaseObject {
 	}
 	
     $sqlerror = "";
-    if (!$rquery) {
+    if (!$this->isValidResource($rquery)) {
         $sqlerror = mysqli_error($this->query_connexion) ;
         if (!empty($sqlerror)) {
           $this->setError("<b>SQL Query Error :</b>".mysqli_errno($this->query_connexion)." - ".$sqlerror." (".$this->sql_query.")") ;
@@ -370,7 +370,8 @@ Class sqlQuery extends BaseObject {
       $numfields = 0 ;
       while(list($key, $table) = each($atable)) {
         $table_def = mysqli_query($this->dbCon->id, "SHOW FIELDS FROM $table");
-        if (is_resource($table_def)) {
+        //if (is_resource($table_def)) {
+        if ($this->isValidResource($table_def)) {
             for ($i=0;$i<mysqli_num_rows($table_def);$i++) {
                 $row_table_def = mysqli_fetch_array($table_def);
                 $field[$numfields] = $row_table_def["Field"];
@@ -386,7 +387,8 @@ Class sqlQuery extends BaseObject {
       
     } else {
       $table_def = mysqli_query($this->dbCon->id, "SHOW FIELDS FROM $atable");
-      if (is_resource($table_def)) {
+      //if (is_resource($table_def)) {
+      if ($this->isValidResource($table_def)) {
         for ($i=0;$i<mysqli_num_rows($table_def);$i++) {
             $row_table_def = mysqli_fetch_array($table_def);
             $field[$i] = $row_table_def["Field"];
@@ -415,7 +417,8 @@ Class sqlQuery extends BaseObject {
     if ($result == "") {
       $result = $this->getResultSet() ;
     }
-    if (is_resource($result)) {
+    //if (is_resource($result)) {
+    if ($this->isValidResource($result)) {
         $numfield = mysqli_num_fields($result) ;
         for ($i=0; $i < $numfield; $i++) {
             $meta = mysqli_fetch_field($result, $i);
@@ -540,7 +543,8 @@ Class sqlQuery extends BaseObject {
    * @access public
    */
   function getTableName($result=0) {
-    if (is_resource($this->result)) {
+    //if (is_resource($this->result)) {
+    if ($this->isValidResource($this->result)) {
         $table = mysqli_field_table($this->result,0);
     } else {
         $this->setError("Can't get the table name the result set is not a ressource") ;
@@ -614,7 +618,8 @@ Class sqlQuery extends BaseObject {
    * @see query(), getResultSet()
    */
   function setResultSet($resultSet) {
-      if (is_resource($resultSet)) {
+      //if (is_resource($resultSet)) {
+      if ($this->isValidResource($resultSet)) {
           $this->result = $resultSet;
       }
   }
@@ -733,7 +738,8 @@ Class sqlQuery extends BaseObject {
     parent::free();
     if ($result>0) {
       mysqli_free_result($result) ;
-    } elseif (is_resource($this->result)) {
+    //} elseif (is_resource($this->result)) {
+    } elseif ($this->isValidResource($this->result)) {
       mysqli_free_result($this->result) ;
     }
     $this->sql_query ="";
@@ -742,5 +748,19 @@ Class sqlQuery extends BaseObject {
     $this->max_rows = 0 ;
     $this->num_rows = 0;
   }
+
+/*
+ * Checks if the resource exists.
+ *
+ * @return boolean
+ */
+function isValidResource($data) {
+	if ($data) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 } /* End class sqlQuery */
 ?>
