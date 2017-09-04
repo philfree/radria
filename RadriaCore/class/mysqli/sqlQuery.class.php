@@ -447,7 +447,8 @@ Class sqlQuery extends BaseObject {
     if ($dbc == 0) {
       $dbc = $this->getDbCon() ;
     }
-    $result = mysqli_list_tables ($dbc->id, $dbc->db);
+	//$result = mysqli_list_tables ($dbc->id, $dbc->db);
+	$result = mysqli_query($dbc->id, "SHOW TABLES");
     $this->result = $result ;
     $this->cursor = 0 ;
     $this->num_rows = mysqli_num_rows($result) ;
