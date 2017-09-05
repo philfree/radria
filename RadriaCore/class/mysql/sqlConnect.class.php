@@ -157,13 +157,17 @@ Class sqlConnect extends BaseObject {
    * @see startp()
    */
   function start($login="", $password="")  {
+	  $sqlQ = new sqlQuery() ;
+
     if (strlen($login) > 0 && strlen($password) > 0) {
       $this->login = $login ;
       $this->password = $password ;
     }
     if (strlen($this->login) > 0 && strlen($this->password) > 0) {
       $linkidentifier = mysql_connect($this->hostname, $this->login, $this->password) ;
-      if (is_resource($linkidentifier)) {
+
+      //if (is_resource($linkidentifier)) {
+      if ($sqlQ->isValidResource($linkidentifier)) {
         $this->id = $linkidentifier ;
         if (strlen($this->db)>0) {
           if (!mysql_select_db($this->db, $this->id)){
@@ -173,7 +177,8 @@ Class sqlConnect extends BaseObject {
       } else { $this->setError("<b>Database Connect Error</b> : Couldn't connect to the database Wrong login and password or Wrong host name") ;}
     } elseif (strlen($this->login)>0) {
       $linkidentifier = mysql_connect($this->hostname, $this->login) ;
-      if (is_resource($linkidentifier)) {
+      //if (is_resource($linkidentifier)) {
+      if ($sqlQ->isValidResource($linkidentifier)) {
         $this->id = $linkidentifier ;
         if (strlen($this->db)>0) {
           if (!mysql_select_db($this->db, $this->id)) {
@@ -186,7 +191,8 @@ Class sqlConnect extends BaseObject {
     if ($this->getUseCluster()) {
             if (strlen($this->wlogin) > 0 && strlen($this->wpassword) > 0) {
             $wlinkidentifier = mysql_connect($this->whostname, $this->wlogin, $this->wpassword) ;
-            if (is_resource($wlinkidentifier)) {
+            //if (is_resource($wlinkidentifier)) {
+            if ($sqlQ->isValidResource($wlinkidentifier)) {
                 $this->wid = $wlinkidentifier ;
                 if (strlen($this->db)>0) {
                 if (!mysql_select_db($this->db, $this->wid)){
@@ -196,7 +202,8 @@ Class sqlConnect extends BaseObject {
             } else { $this->setError("<b>Database Connect Error</b> : Couldn't connect to the write database Wrong login and password or Wrong host name") ;}
             } elseif (strlen($this->wlogin)>0) {
                 $wlinkidentifier = mysql_connect($this->whostname, $this->wlogin) ;
-                if (is_resource($wlinkidentifier)) {
+                //if (is_resource($wlinkidentifier)) {
+                if ($sqlQ->isValidResource($wlinkidentifier)) {
                     $this->wid = $wlinkidentifier ;
                     if (strlen($this->db)>0) {
                     if (!mysql_select_db($this->db, $this->wid)) {
@@ -231,7 +238,10 @@ Class sqlConnect extends BaseObject {
     }
     if (strlen($this->login) > 0 && strlen($this->password) > 0) {
       $linkidentifier = mysql_pconnect($this->hostname, $this->login, $this->password) ;
-      if (is_resource($linkidentifier)) {
+	  $sqlQ = new sqlQuery() ;
+
+      //if (is_resource($linkidentifier)) {
+      if ($sqlQ->isValidResource($linkidentifier)) {
         $this->id = $linkidentifier ;
         if (strlen($this->db)>0) {
           if(!mysql_select_db($this->db, $linkidentifier)) {
@@ -267,7 +277,10 @@ Class sqlConnect extends BaseObject {
    */
   function setDatabase($db='') {
     $this->db = $db ;
-    if(is_resource($this->id))  {
+	$sqlQ = new sqlQuery() ;
+
+    //if(is_resource($this->id))  {
+    if($sqlQ->isValidResource($this->id))  {
       if (!mysql_select_db($this->db, $this->id)) {
         $this->setError("Couldn't select database:".$this->db." Check the database name and that your are authorize to access it");
         return false;
@@ -333,7 +346,10 @@ Class sqlConnect extends BaseObject {
 * 	 @return boolean true if there is connexion to the database, false otherwise.
    */
   function is_connected() {
-    if (is_resource($this->id)) {
+	  $sqlQ = new sqlQuery() ;
+
+    //if (is_resource($this->id)) {
+    if ($sqlQ->isValidResource($this->id)) {
       return true ;
     } else {
       return false ; 
