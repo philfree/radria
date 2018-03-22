@@ -117,7 +117,8 @@ Class DataObject extends sqlQuery {
 
     public function next() {
         //try {
-	if (is_resource($this->getResultSet())) {
+	//if (is_resource($this->getResultSet())) {
+	if ($this->isValidResource($this->getResultSet())) {
           return $this->values = $this->fetchArray();
 	} else { return false ; } 
 //	catch (RadriaException $e) {
@@ -153,7 +154,8 @@ Class DataObject extends sqlQuery {
      * @see next()
      */
     public function first() {
-        if (is_resource($this->getResultSet())) {
+        //if (is_resource($this->getResultSet())) {
+	if ($this->isValidResource($this->getResultSet())) {
             $this->setCursor(0);
             $this->values = $this->fetchArray();
             $this->setCursor(0);
@@ -208,11 +210,13 @@ Class DataObject extends sqlQuery {
      * @return value of the field
      */
     public function __get($field) {
-        $value = "";
+	$value = "";
+
         if (isset($this->values[$field]) || $this->hasData()) {
             if (strlen($this->values[$field]) > 0) {
                 $value = $this->values[$field] ;
-            } elseif(is_resource($this->getResultSet())) {
+            //} elseif(is_resource($this->getResultSet())) {
+            } elseif($this->isValidResource($this->getResultSet())) {
                 $value = $this->getData($field);
             }
             if ($this->applyreg) {
@@ -627,11 +631,13 @@ Class DataObject extends sqlQuery {
      * @param sqlConnect connexion object to use to load that query.
      */
     function setFields($xml_obj_fields="", $extrcon=0) {
+
         if (empty($xml_obj_fields)) { $xml_obj_fields = $this->getTable(); }
         if (is_object($xml_obj_fields)) {
             $this->fields = $xml_obj_fields;
         } else {
-            if (is_resource($extracon)) {
+            //if (is_resource($extracon)) {
+            if ($this->isValidResource($extracon)) {
                 $this->fields = new Fields($xml_obj_fields, $extracon);
             } else {
                 $this->fields = new Fields($xml_obj_fields, $this->getDbCon());
@@ -1103,8 +1109,10 @@ Class DataObject extends sqlQuery {
      */
 
     function hasData() {
+
       $has_data = false;
-      if (is_resource($this->result)) { 
+      //if (is_resource($this->result)) { 
+      if ($this->isValidResource($this->result)) { 
         if ($this->getNumRows() > 0) {
             $has_data =  true;
         }

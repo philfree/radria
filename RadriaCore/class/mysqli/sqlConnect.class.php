@@ -232,8 +232,10 @@ Class sqlConnect extends BaseObject {
       $this->password = $password ;
     }
     if (strlen($this->login) > 0 && strlen($this->password) > 0) {
-      $linkidentifier = mysqli_pconnect($this->hostname, $this->login, $this->password) ;
-      if (is_resource($linkidentifier)) {
+		$linkidentifier = mysqli_pconnect($this->hostname, $this->login, $this->password) ;
+        $sqlQ = new sqlQuery() ;
+      //if (is_resource($linkidentifier)) {
+      if ($sqlQ->isValidResource($linkidentifier)) {
         $this->id = $linkidentifier ;
         if (strlen($this->db)>0) {
           if(!mysql_select_db($linkidentifier, $this->db)) {
@@ -269,7 +271,9 @@ Class sqlConnect extends BaseObject {
    */
   function setDatabase($db='') {
     $this->db = $db ;
-    if(is_resource($this->id))  {
+	$sqlQ = new sqlQuery() ;
+    //if(is_resource($this->id))  {
+    if($sqlQ->isValidResource($this->id))  {
       if (!mysqli_select_db($this->id, $this->db)) {
         $this->setError("Couldn't select database:".$this->db." Check the database name and that your are authorize to access it");
         return false;
@@ -335,7 +339,10 @@ Class sqlConnect extends BaseObject {
 * 	 @return boolean true if there is connexion to the database, false otherwise.
    */
   function is_connected() {
-    if (is_resource($this->id)) {
+	  $sqlQ = new sqlQuery() ;
+
+    //if (is_resource($this->id)) {
+    if ($sqlQ->isValidResource($this->id)) {
       return true ;
     } else {
       return false ; 
