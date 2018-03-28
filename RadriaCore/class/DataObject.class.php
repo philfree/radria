@@ -818,8 +818,37 @@ Class DataObject extends sqlQuery {
 	    $fieldlist = rtrim($fieldlist,' ,');
 	    $valuelist = rtrim($valuelist,' ,');
             $query = "INSERT INTO `$table` ($fieldlist) VALUES ($valuelist)";
-        } elseif ($GLOBALS['cfg_local_db'] == "pgsql") {
+        } elseif ($GLOBALS['cfg_local_db'] == "mysqli") {
 
+            while (list($key, $fieldname) = each($tableFields)) {
+				$this->setLog("\n ".$fieldname."=".$fields[$fieldname].";");
+                if (strlen($fields[$fieldname])>0) {
+                    if (get_magic_quotes_gpc()) {
+                        $fields[$fieldname] = stripslashes($fields[$fieldname]);
+                    }
+                    $fieldname = str_replace("`", "", $fieldname);
+                    $fieldlist .= "`$fieldname`, ";
+                    if ($fields[$fieldname] == "null") { 
+                        $val = $fields[$fieldname]; 
+                    } else {
+                        if (function_exists("mysqli_real_escape_string")) {
+                            $val = "'".mysqli_real_escape_string($this->dbCon->id,$fields[$fieldname])."'";
+                        } else {
+                         // } elseif (is_numeric($fields[$fieldname])) {
+                              //$val = $fields[$fieldname];                    
+                                //$val = "'".addslashes($fields[$fieldname])."'";
+                        }
+                    }
+                    $valuelist .= "$val, ";
+                }
+            }
+            $table = str_replace("`", "", $table);
+            //$fieldlist = preg_replace(', $', '', $fieldlist);
+            //$valuelist = preg_replace(', $', '', $valuelist);
+	        $fieldlist = rtrim($fieldlist,' ,');
+	        $valuelist = rtrim($valuelist,' ,');
+            $query = "INSERT INTO `$table` ($fieldlist) VALUES ($valuelist)";
+        } elseif ($GLOBALS['cfg_local_db'] == "pgsql") {
             while (list($key, $fieldname) = each($tableFields)) {
                     if (strlen($fields[$fieldname])>0) {
                         $this->setLog("\n For $key / $fieldname / $var ");
@@ -993,6 +1022,63 @@ Class DataObject extends sqlQuery {
                         $this->setLog(" add:`$key` = $val, ");
                     } else {
                         if($val != "null") $val = "'".mysql_real_escape_string($val)."'";
+                        $valuelist .= "`$key` = $val, ";
+                        $this->setLog(" add:`$key` = $val, ");
+                    }
+                    } 
+            }
+           // $valuelist = preg_replace(', $', '', $valuelist);
+	   $valuelist = rtrim($valuelist,' ,');
+            
+            if (!empty($primary_key_var)) {
+				if (is_object($reg->fields[$primary_key_var])) {
+					if ($reg->fields[$primary_key_var]->getRdata("databasetype") == "integer") {
+						   $query = "UPDATE `$table` SET $valuelist WHERE $primary_key_var = $primary_key_value";
+					} else {
+						 $query = "UPDATE `$table` SET $valuelist WHERE $primary_key_var = '$primary_key_value'";
+					}
+				} else {
+					 $query = "UPDATE `$table` SET $valuelist WHERE $primary_key_var = '$primary_key_value'";
+				}
+            }
+
+        } elseif ($GLOBALS['cfg_local_db'] == "mysqli") {
+            $primary_key_var = mysqli_real_escape_string($this->dbCon->id,$primary_key_var);
+            $primary_key_value = mysqli_real_escape_string($this->dbCon->id,$primary_key_value);
+            $fields = $this->getValues();
+            while (list($key, $val) = each($fields)) {
+                    if (get_magic_quotes_gpc()) {
+                        $val = stripslashes($val);
+                    }
+                    $this->setLog("\n For $key / $val ");
+                    if (is_object($reg->fields[$key])) {
+                    if (strlen($reg->fields[$key]->getRdata("databasetype"))>0) {
+                        $this->setLog(" type:".$reg->fields[$key]->getRdata("databasetype"));
+                        if ($reg->fields[$key]->getRdata("databasetype") == "varchar"
+                         || $reg->fields[$key]->getRdata("databasetype") == "text"
+                        ) { $val = "'".mysqli_real_escape_string($this->dbCon->id,$val)."'";}
+                        if (!empty($val) 
+                              && ($reg->fields[$key]->getRdata("databasetype") == "time"
+                                  || $reg->fields[$key]->getRdata("databasetype") == "date")
+                            ) {
+                            $val = "'".mysqli_real_escape_string($this->dbCon->id,$val)."'";
+                        }
+                        if ((!empty($val) || $val == 0) 
+                              && ($reg->fields[$key]->getRdata("databasetype") == "integer")
+                            ) {
+                            $val = (int)$val;
+                        }
+                        if ((!empty($val) || $val == 0)
+                              && ($reg->fields[$key]->getRdata("databasetype") == "float")
+                            ) {
+                            $val = (float)$val;
+                        }
+                        if (!empty($val) || $val == 0) {
+                           $valuelist .= "`$key` = $val, ";
+                        }
+                        $this->setLog(" add:`$key` = $val, ");
+                    } else {
+                        if($val != "null") $val = "'".mysqli_real_escape_string($this->dbCon->id,$val)."'";
                         $valuelist .= "`$key` = $val, ";
                         $this->setLog(" add:`$key` = $val, ");
                     }
