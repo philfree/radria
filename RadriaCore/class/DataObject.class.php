@@ -1174,6 +1174,8 @@ Class DataObject extends sqlQuery {
      */
 
     function delete($id='') {
+        if (empty($GLOBALS['cfg_local_db'])) { $GLOBALS['cfg_local_db'] = "mysql"; }
+
         if (empty($id)) {
             $id = $this->getPrimaryKeyValue();
         }
@@ -1182,8 +1184,17 @@ Class DataObject extends sqlQuery {
 				$q_del = new sqlQuery($this->getDbCon()) ; 
 				$q_del->query("delete from ".$this->getTable()." where ".$this->getPrimaryKey()." = ".$id);
 			} else {
-				$q_del = new sqlQuery($this->getDbCon()) ; 
-				$q_del->query("delete from ".$this->getTable()." where ".$this->getPrimaryKey()." = '".mysql_real_escape_string ( $id )."'");				
+                if($GLOBALS['cfg_local_db'] == "mysql"){
+                    $q_del = new sqlQuery($this->getDbCon()) ; 
+				    $q_del->query("delete from ".$this->getTable()." where ".$this->getPrimaryKey()." = '".mysql_real_escape_string ( $id )."'");				
+                } else if($GLOBALS['cfg_local_db'] == "mysqli"){
+                    $q_del = new sqlQuery($this->getDbCon()) ; 
+				    $q_del->query("delete from ".$this->getTable()." where ".$this->getPrimaryKey()." = '".mysqli_real_escape_string($this->dbCon->id,$id)."'");				
+                } else {
+                    $q_del = new sqlQuery($this->getDbCon()) ; 
+				    $q_del->query("delete from ".$this->getTable()." where ".$this->getPrimaryKey()." = '".mysql_real_escape_string ( $id )."'");				
+                }
+                
 			}
         }
     }
