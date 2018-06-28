@@ -902,7 +902,7 @@ Class DataObject extends sqlQuery {
             $query = "INSERT INTO `$table` ($fieldlist) VALUES ($valuelist)";
 
         } else {
-
+            /**
             while (list($key, $fieldname) = each($tableFields)) {
                     if (strlen($fields[$fieldname])>0) {
                             $fieldlist .= "`$fieldname`, ";
@@ -922,6 +922,31 @@ Class DataObject extends sqlQuery {
             $valuelist = rtrim($valuelist,',');
 
             $query = "INSERT INTO `$table` ($fieldlist) VALUES ($valuelist)";
+            **/
+            
+             while (list($key, $fieldname) = each($tableFields)) {
+				$this->setLog("\n ".$fieldname."=".$fields[$fieldname].";");
+                if (strlen($fields[$fieldname])>0) {
+                    if (get_magic_quotes_gpc()) {
+                        $fields[$fieldname] = stripslashes($fields[$fieldname]);
+                    }
+                    $fieldname = str_replace("`", "", $fieldname);
+                    $fieldlist .= "`$fieldname`, ";
+                    if ($fields[$fieldname] == "null") { 
+                        $val = $fields[$fieldname]; 
+                    } else {                       
+                         $val = "'".$this->quote($fields[$fieldname])."'";
+                    }
+                    $valuelist .= "$val, ";
+                }
+            }
+            $table = str_replace("`", "", $table);
+	        $fieldlist = rtrim($fieldlist,' ,');
+	        $valuelist = rtrim($valuelist,' ,');
+            $query = "INSERT INTO `$table` ($fieldlist) VALUES ($valuelist)";
+            
+            
+            
 
         }
         $this->setLog("\n Running query:\n".$query);
